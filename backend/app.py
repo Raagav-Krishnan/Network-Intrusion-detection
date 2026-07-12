@@ -8,8 +8,19 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost", "http://localhost:*",
-                   "http://127.0.0.1", "http://127.0.0.1:*", "null"])
+CORS(app, origins=[
+    # local development
+    "http://localhost",
+    "http://localhost:*",
+    "http://127.0.0.1",
+    "http://127.0.0.1:*",
+    "null",
+    # deployed Vercel frontend
+    "https://network-intrusion-detection.vercel.app",
+    "https://network-intrusion-detection-git-main.vercel.app",
+    # any Vercel preview deployments for this project
+    r"https://network-intrusion-detection.*\.vercel\.app",
+])
 
 IBM_API_KEY       = os.getenv("IBM_API_KEY", "")
 WML_DEPLOYMENT_URL = os.getenv("WML_DEPLOYMENT_URL", "")
@@ -265,4 +276,5 @@ def predict():
 
 
 if __name__ == "__main__":
-    app.run(debug=False, port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)

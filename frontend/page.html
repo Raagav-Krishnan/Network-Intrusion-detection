@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SecureNet AI | Intelligence that Outsmarts Threats</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-tertiary-fixed-variant": "#5b4300",
+                "outline": "#849587",
+                "on-error-container": "#ffdad6",
+                "secondary-fixed-dim": "#18ddd9",
+                "surface-container-low": "#151e17",
+                "on-secondary-fixed-variant": "#00504e",
+                "error-container": "#93000a",
+                "on-secondary": "#003736",
+                "on-tertiary": "#402d00",
+                "surface-tint": "rgb(var(--primary) / <alpha-value>)",
+                "primary-container": "#2af598",
+                "tertiary-fixed-dim": "#edc05e",
+                "surface-bright": "#323b34",
+                "surface-container-highest": "#2e3730",
+                "on-primary-container": "#006c3f",
+                "secondary-fixed": "#50f9f6",
+                "on-surface-variant": "#bacbbc",
+                "on-surface": "#dbe5db",
+                "inverse-primary": "#006d3f",
+                "surface-container-lowest": "#08100a",
+                "on-tertiary-container": "#775800",
+                "surface-dim": "#0d150f",
+                "surface-container-high": "#232c25",
+                "on-secondary-container": "#005857",
+                "on-primary-fixed-variant": "#00522e",
+                "on-background": "#dbe5db",
+                "error": "#ffb4ab",
+                "tertiary-fixed": "#ffdf9e",
+                "on-error": "#690005",
+                "primary-fixed": "#57ffa6",
+                "primary-fixed-dim": "#00e38a",
+                "on-primary-fixed": "#002110",
+                "surface-variant": "#2e3730",
+                "on-secondary-fixed": "#00201f",
+                "tertiary-container": "#ffd16d",
+                "outline-variant": "#3b4a3f",
+                "on-tertiary-fixed": "#261a00",
+                "primary": "rgb(var(--primary) / <alpha-value>)",
+                "surface": "#0d150f",
+                "tertiary": "#fff2de",
+                "on-primary": "#00391e",
+                "inverse-surface": "#dbe5db",
+                "surface-container": "#19221b",
+                "secondary-container": "#00d7d4",
+                "background": "#0A0A0B",
+                "inverse-on-surface": "#29332c",
+                "secondary": "#47f4f0",
+                "text-secondary": "#bacbbc",
+                "glass-surface": "rgba(25, 34, 27, 0.65)",
+                "glass-border": "rgba(132, 149, 135, 0.2)"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px",
+                "32": "32px"
+        },
+        "spacing": {
+                "margin-mobile": "16px",
+                "xl": "40px",
+                "lg": "24px",
+                "unit": "4px",
+                "sm": "8px",
+                "gutter": "24px",
+                "md": "16px",
+                "xs": "4px",
+                "margin-desktop": "48px",
+                "section-gap": "120px"
+        },
+        "fontFamily": {
+                "label-sm": ["JetBrains Mono"],
+                "display-lg": ["Space Grotesk"],
+                "headline-md": ["Space Grotesk"],
+                "headline-lg": ["Space Grotesk"],
+                "body-lg": ["Inter"],
+                "body-md": ["Inter"],
+                "button": ["Inter"]
+        },
+        "fontSize": {
+                "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                "headline-lg": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}],
+                "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                "button": ["14px", {"lineHeight": "1.0", "letterSpacing": "0.02em", "fontWeight": "600"}]
+        }
+      },
+    },
+  }
+</script>
+<style>
+        :root {
+            --primary: 0, 227, 138;
+            --bg: #0A0A0B;
+            --surface: #0d150f;
+            --surface-container: #19221b;
+            --surface-container-low: #151e17;
+            --on-surface: #dbe5db;
+            --text-secondary: #bacbbc;
+            --glass-bg: rgba(25, 34, 27, 0.65);
+            --glass-border: rgba(132, 149, 135, 0.2);
+            --glass-bg-hover: rgba(46, 55, 48, 0.8);
+            --glass-border-hover: rgba(var(--primary), 0.3);
+            --neo-card-shadow: 8px 8px 24px rgba(0, 0, 0, 0.3);
+            --neo-card-border: rgba(132, 149, 135, 0.1);
+            --neo-btn-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            --neo-btn-border: rgba(132, 149, 135, 0.2);
+            --nav-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            --process-bg: rgba(21, 30, 23, 0.2);
+        }
+
+        html:not(.dark) {
+            --primary: 14, 124, 102;
+            --bg: #f0f2f0;
+            --surface: #ffffff;
+            --surface-container: #e4e6e4;
+            --surface-container-low: #f5f7f5;
+            --on-surface: #1a2e1c;
+            --text-secondary: #4a5c4c;
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --glass-bg-hover: rgba(255, 255, 255, 0.8);
+            --glass-border-hover: rgba(var(--primary), 0.5);
+            --neo-card-shadow: 8px 8px 24px rgba(0, 0, 0, 0.08);
+            --neo-card-border: rgba(0, 0, 0, 0.08);
+            --neo-btn-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --neo-btn-border: rgba(0, 0, 0, 0.08);
+            --nav-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            --process-bg: rgba(245, 247, 245, 0.2);
+        }
+
+        body {
+            background-color: var(--bg);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            color: var(--on-surface);
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        nav, footer {
+            transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        html:not(.dark) nav { box-shadow: var(--nav-shadow); }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            background: var(--glass-bg-hover);
+            border-color: var(--glass-border-hover);
+        }
+
+        .neo-button-primary {
+            background: linear-gradient(135deg, rgb(var(--primary)) 0%, #00d7d4 100%);
+            box-shadow: 0 4px 15px rgba(var(--primary), 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .neo-button-primary:active {
+            transform: scale(0.96);
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .neo-button-secondary {
+            background: var(--surface-container);
+            border: 1px solid var(--neo-btn-border);
+            box-shadow: var(--neo-btn-shadow);
+            transition: all 0.2s ease;
+        }
+
+        .neo-card {
+            background: var(--surface-container-low);
+            border: 1px solid var(--neo-card-border);
+            box-shadow: var(--neo-card-shadow);
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Tailwind utility overrides for light mode */
+        html:not(.dark) .bg-background { background-color: var(--bg); }
+        html:not(.dark) .text-on-surface { color: var(--on-surface); }
+        html:not(.dark) .text-text-secondary { color: var(--text-secondary); }
+        html:not(.dark) .bg-glass-surface { background: var(--glass-bg); }
+        html:not(.dark) .border-glass-border { border-color: var(--glass-border); }
+        html:not(.dark) .bg-surface-container { background-color: var(--surface-container); }
+        html:not(.dark) #intelligence { background-color: var(--process-bg); }
+
+        /* Smooth primary color transitions */
+        [class*="text-primary"],
+        [class*="bg-primary"],
+        [class*="border-primary"],
+        .neo-button-primary {
+            transition: color 0.4s ease, background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        /* ===== Theme Toggle Switch ===== */
+        .theme-toggle {
+            position: relative;
+            width: 58px;
+            height: 28px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            flex-shrink: 0;
+            outline: none;
+        }
+
+        .theme-toggle-track {
+            width: 100%;
+            height: 100%;
+            border-radius: 14px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0f1d36, #1a2d50);
+            transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+
+        html:not(.dark) .theme-toggle-track {
+            background: linear-gradient(135deg, #7EC8E3, #4DA6E8);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+
+        .theme-toggle:hover .theme-toggle-track {
+            filter: brightness(1.1);
+        }
+
+        .theme-toggle:active .theme-toggle-track {
+            filter: brightness(0.95);
+        }
+
+        /* Stars */
+        .toggle-stars {
+            position: absolute;
+            inset: 0;
+            transition: opacity 0.5s ease;
+            opacity: 1;
+        }
+
+        html:not(.dark) .toggle-stars { opacity: 0; }
+
+        .toggle-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #ffffff;
+            border-radius: 50%;
+        }
+
+        .toggle-star:nth-child(1) { top: 6px; left: 10px; animation: twinkle 2s ease-in-out infinite alternate; animation-delay: 0s; }
+        .toggle-star:nth-child(2) { top: 14px; left: 18px; animation: twinkle 2s ease-in-out infinite alternate; animation-delay: 0.5s; }
+        .toggle-star:nth-child(3) { top: 8px; left: 26px; animation: twinkle 2s ease-in-out infinite alternate; animation-delay: 1s; }
+        .toggle-star:nth-child(4) { top: 18px; left: 8px; animation: twinkle 2s ease-in-out infinite alternate; animation-delay: 0.3s; }
+        .toggle-star:nth-child(5) { top: 10px; left: 34px; animation: twinkle 2s ease-in-out infinite alternate; animation-delay: 0.7s; }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.4); }
+        }
+
+        /* Sun on track (visible in light/day mode) */
+        .toggle-sun {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #FFD93D;
+            border-radius: 50%;
+            top: 50%;
+            left: 35px;
+            transform: translateY(-50%) scale(0);
+            box-shadow: 0 0 6px #FFD93D, 0 0 14px rgba(255, 217, 61, 0.4);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+            opacity: 0;
+        }
+
+        html:not(.dark) .toggle-sun {
+            transform: translateY(-50%) scale(1);
+            opacity: 1;
+        }
+
+        /* Moon on track (visible in dark/night mode) */
+        .toggle-moon {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            top: 50%;
+            left: 14px;
+            transform: translateY(-50%) scale(1);
+            box-shadow: 2px -1px 0 0 #c8d8f0;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+            opacity: 1;
+        }
+
+        html:not(.dark) .toggle-moon {
+            transform: translateY(-50%) scale(0);
+            opacity: 0;
+        }
+
+        /* Clouds */
+        .toggle-cloud {
+            position: absolute;
+            border-radius: 10px;
+            transition: opacity 0.5s ease, background 0.5s ease;
+        }
+
+        .toggle-cloud-1 {
+            width: 14px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            top: 8px;
+            left: 14px;
+        }
+
+        .toggle-cloud-2 {
+            width: 11px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.15);
+            top: 19px;
+            left: 28px;
+        }
+
+        html:not(.dark) .toggle-cloud-1 {
+            background: rgba(255, 255, 255, 0.7);
+            animation: cloud-drift 4s ease-in-out infinite alternate;
+        }
+
+        html:not(.dark) .toggle-cloud-2 {
+            background: rgba(255, 255, 255, 0.5);
+            animation: cloud-drift 5s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes cloud-drift {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(3px); }
+        }
+
+        /* Thumb */
+        .theme-toggle-thumb {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            background: linear-gradient(135deg, #e8e8e8, #ffffff);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.5s ease, box-shadow 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        html:not(.dark) .theme-toggle-thumb {
+            transform: translateX(30px);
+            background: linear-gradient(135deg, #2a3a5c, #1a2744);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+        }
+
+        .theme-toggle:hover .theme-toggle-thumb {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+        }
+
+        .theme-toggle:active .theme-toggle-thumb {
+            transform: scaleX(1.12);
+        }
+
+        html:not(.dark) .theme-toggle:active .theme-toggle-thumb {
+            transform: translateX(30px) scaleX(1.12);
+        }
+
+        /* Sun icon on thumb (dark mode) */
+        .thumb-sun {
+            width: 8px;
+            height: 8px;
+            background: #FFD93D;
+            border-radius: 50%;
+            box-shadow: 0 0 4px #FFD93D;
+            position: absolute;
+            transition: opacity 0.3s ease;
+            opacity: 1;
+        }
+
+        /* Moon icon on thumb (light mode) */
+        .thumb-moon {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            box-shadow: 2px -1px 0 0 #c8d8f0;
+            position: absolute;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        html:not(.dark) .thumb-sun { opacity: 0; }
+        html:not(.dark) .thumb-moon { opacity: 1; }
+
+        /* ===== Demo Modal ===== */
+        body.modal-open { overflow: hidden; }
+
+        .demo-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .demo-modal.active {
+            pointer-events: all;
+            opacity: 1;
+        }
+
+        .demo-modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .demo-modal-panel {
+            position: relative;
+            width: 100%;
+            max-width: 880px;
+            max-height: 90vh;
+            background: var(--surface-container);
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+            transform: scale(0.92) translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.4s ease, border-color 0.4s ease;
+        }
+
+        .demo-modal.active .demo-modal-panel {
+            transform: scale(1) translateY(0);
+        }
+
+        .demo-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: var(--on-surface);
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease, color 0.4s ease, border-color 0.4s ease;
+            z-index: 2;
+        }
+
+        html:not(.dark) .demo-modal-close {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .demo-modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        html:not(.dark) .demo-modal-close:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-modal-body {
+            padding: 32px;
+            padding-top: 8px;
+        }
+
+        /* ===== Demo Video Player ===== */
+        .demo-video-wrap {
+            position: relative;
+            width: 100%;
+            margin-bottom: 24px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            background: #000;
+        }
+
+        /* 16:9 aspect-ratio container */
+        .demo-video-ratio {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+        }
+
+        .demo-video-ratio video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain;
+            background: #000;
+        }
+
+        /* Loading spinner overlay */
+        .demo-video-loader {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.55);
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .demo-video-loader.hidden { opacity: 0; }
+
+        .demo-video-spinner {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.15);
+            border-top-color: rgb(var(--primary));
+            animation: dv-spin 0.75s linear infinite;
+        }
+        @keyframes dv-spin { to { transform: rotate(360deg); } }
+
+        /* Error overlay */
+        .demo-video-error {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.65);
+            color: rgba(255, 255, 255, 0.75);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            text-align: center;
+            padding: 24px;
+        }
+        .demo-video-error.visible { display: flex; }
+        html:not(.dark) .demo-video-wrap {
+            border-color: rgba(14,124,102,0.18);
+        }
+
+        .demo-modal-info h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--on-surface);
+            margin-bottom: 10px;
+            transition: color 0.4s ease;
+        }
+
+        .demo-modal-info p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 16px;
+            transition: color 0.4s ease;
+        }
+
+        .demo-modal-info ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .demo-modal-info li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.7;
+            transition: color 0.4s ease;
+        }
+
+        .demo-modal-info li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 9px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgb(var(--primary));
+            transition: background 0.4s ease;
+        }
+
+        .demo-modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid var(--glass-border);
+            transition: border-color 0.4s ease;
+        }
+
+        .demo-modal-btn-primary {
+            padding: 12px 28px;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, rgb(var(--primary)) 0%, #00d7d4 100%);
+            color: #00391e;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .demo-modal-btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(var(--primary), 0.3);
+        }
+
+        .demo-modal-btn-secondary {
+            padding: 12px 28px;
+            border-radius: 9999px;
+            background: var(--surface-container-low);
+            border: 1px solid var(--glass-border);
+            color: var(--on-surface);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease, background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+        }
+
+        .demo-modal-btn-secondary:hover {
+            background: var(--glass-bg-hover);
+        }
+
+        @media (max-width: 640px) {
+            .demo-modal-body { padding: 20px; padding-top: 8px; }
+            .demo-modal-actions { flex-direction: column; }
+            .demo-modal-btn-primary, .demo-modal-btn-secondary { width: 100%; text-align: center; }
+        }
+
+        /* Nav link active state & sliding indicator */
+        .nav-link.active {
+            color: rgb(var(--primary));
+            font-weight: 700;
+        }
+
+        #navIndicator {
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            height: 2px;
+            background: rgb(var(--primary));
+            border-radius: 1px;
+            transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), background 0.4s ease;
+            pointer-events: none;
+            will-change: transform;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- Shader Background -->
+
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-3 rounded-full mt-6 mx-auto w-[90%] max-w-7xl backdrop-blur-xl border border-glass-border bg-glass-surface shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+<div class="flex items-center gap-2">
+<span class="font-display-lg text-2xl tracking-tighter text-primary">SecureNet AI</span>
+</div>
+<div id="navLinks" class="hidden md:flex items-center gap-8 relative">
+<a class="nav-link font-body-md text-body-md text-text-secondary hover:text-primary transition-colors duration-300" href="#solutions">Solutions</a>
+<a class="nav-link font-body-md text-body-md text-text-secondary hover:text-primary transition-colors duration-300" href="#platform">Platform</a>
+<a class="nav-link font-body-md text-body-md text-text-secondary hover:text-primary transition-colors duration-300" href="#intelligence">Intelligence</a>
+<a class="nav-link font-body-md text-body-md text-text-secondary hover:text-primary transition-colors duration-300" href="#security">Security</a>
+<a class="nav-link font-body-md text-body-md text-text-secondary hover:text-primary transition-colors duration-300" href="#enterprise">Enterprise</a>
+<span id="navIndicator"></span>
+</div>
+<div class="flex items-center gap-4">
+<div class="theme-toggle" id="themeToggle" role="button" tabindex="0" aria-label="Toggle theme">
+<div class="theme-toggle-track">
+<div class="toggle-stars">
+<span class="toggle-star"></span>
+<span class="toggle-star"></span>
+<span class="toggle-star"></span>
+<span class="toggle-star"></span>
+<span class="toggle-star"></span>
+</div>
+<div class="toggle-moon"></div>
+<div class="toggle-sun"></div>
+<div class="toggle-cloud toggle-cloud-1"></div>
+<div class="toggle-cloud toggle-cloud-2"></div>
+<div class="theme-toggle-thumb">
+<div class="thumb-sun"></div>
+<div class="thumb-moon"></div>
+</div>
+</div>
+</div>
+<button onclick="window.location.href='dashboard.html'" class="font-button text-button px-6 py-2.5 neo-button-primary rounded-full text-on-primary hover:scale-105 active:scale-95 transition-all">Get Started</button>
+</div>
+</nav>
+<main class="relative z-10">
+<!-- Hero Section -->
+<section id="solutions" class="min-h-screen flex items-center pt-32 pb-20 px-8 max-w-7xl mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<!-- Hero Left -->
+<div class="space-y-8 animate-fade-in">
+<div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-primary-container/10 border border-primary/20">
+<span class="material-symbols-outlined text-primary text-sm">verified_user</span>
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest">Next-Gen Security</span>
+</div>
+<h1 class="font-display-lg text-[56px] text-on-surface leading-[1.05]">
+                        Intelligence that <span class="text-primary">Outsmarts</span> Threats.
+                    </h1>
+<p class="font-body-lg text-body-lg text-text-secondary max-w-xl">
+                        A premium autonomous defense layer engineered for modern enterprise scale. SecureNet AI learns, predicts, and neutralizes risks before they manifest.
+                    </p>
+<div class="flex flex-wrap gap-4 pt-4">
+<button onclick="window.location.href='dashboard.html'" class="px-8 py-4 rounded-full neo-button-primary text-on-primary font-button text-lg hover:scale-105 transition-transform">Get Started</button>
+<button onclick="openDemoModal()" class="px-8 py-4 rounded-full neo-button-secondary text-primary font-button text-lg flex items-center gap-2 hover:scale-105 transition-transform">
+<span class="material-symbols-outlined">play_circle</span>
+                            Watch Demo
+                        </button>
+</div>
+</div>
+<!-- Hero Right (3D & Floating Cards) -->
+<div class="relative h-[600px] w-full flex items-center justify-center">
+<div class="absolute inset-0 glass-card rounded-32 overflow-hidden shadow-2xl">
+<div id="hero-threejs-container" style="width:100%;height:100%"></div>
+<script>
+(function() {
+  const container = document.getElementById('hero-threejs-container');
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x000000);
+  const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+  renderer.setSize(width, height);
+  renderer.setPixelRatio(window.devicePixelRatio);
+  container.appendChild(renderer.domElement);
+
+  const geometry = new THREE.IcosahedronGeometry(1.5, 2);
+  const material = new THREE.MeshPhongMaterial({
+      color: 0x2AF598,
+      transparent: true,
+      opacity: 0.2,
+      wireframe: true,
+      emissive: 0x2AF598,
+      emissiveIntensity: 0.5
+  });
+  const core = new THREE.Mesh(geometry, material);
+  scene.add(core);
+
+  const innerGeo = new THREE.SphereGeometry(0.8, 32, 32);
+  const innerMat = new THREE.MeshStandardMaterial({
+      color: 0x08D9D6,
+      metalness: 0.1,
+      roughness: 0.2,
+      emissive: 0x08D9D6,
+      emissiveIntensity: 1.0
+  });
+  const innerSphere = new THREE.Mesh(innerGeo, innerMat);
+  scene.add(innerSphere);
+
+  const particlesCount = 50;
+  const particlesGeo = new THREE.BufferGeometry();
+  const posArray = new Float32Array(particlesCount * 3);
+  for(let i=0; i<particlesCount * 3; i++) {
+      posArray[i] = (Math.random() - 0.5) * 6;
+  }
+  particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+  const particlesMat = new THREE.PointsMaterial({
+      size: 0.05,
+      color: 0x2AF598
+  });
+  const particlesMesh = new THREE.Points(particlesGeo, particlesMat);
+  scene.add(particlesMesh);
+
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+  scene.add(ambientLight);
+  const pointLight = new THREE.PointLight(0xffffff, 1);
+  pointLight.position.set(5, 5, 5);
+  scene.add(pointLight);
+
+  camera.position.z = 5;
+
+  function animate() {
+      requestAnimationFrame(animate);
+      core.rotation.y += 0.005;
+      core.rotation.x += 0.002;
+      innerSphere.rotation.y -= 0.003;
+      particlesMesh.rotation.y += 0.001;
+      renderer.render(scene, camera);
+  }
+
+  window.addEventListener('resize', () => {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+  });
+
+  animate();
+})();
+</script>
+</div>
+<!-- Floating Data Cards -->
+<div class="absolute -top-10 -right-4 glass-card p-4 rounded-xl flex items-center gap-3 animate-float" style="animation-delay: 0s;">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">security</span>
+</div>
+<div>
+<p class="font-label-sm text-[10px] text-text-secondary">SCANNING NODES</p>
+<p class="font-headline-md text-sm font-bold">4.2M Operations/s</p>
+</div>
+</div>
+<div class="absolute bottom-10 -left-8 glass-card p-4 rounded-xl flex items-center gap-3 animate-float" style="animation-delay: 1.5s;">
+<div class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">analytics</span>
+</div>
+<div>
+<p class="font-label-sm text-[10px] text-text-secondary">THREAT NEUTRALIZED</p>
+<p class="font-headline-md text-sm font-bold">Zero-Day Blocked</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Bento Grid -->
+<section id="platform" class="py-section-gap px-8 max-w-7xl mx-auto">
+<div class="text-center mb-16 space-y-4">
+<h2 class="font-headline-lg text-headline-lg">Elite Protection Architecture</h2>
+<p class="font-body-md text-body-md text-text-secondary max-w-2xl mx-auto">Proprietary neural models trained on global threat vectors to provide unprecedented security depth.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Card 1 -->
+<div class="glass-card p-8 rounded-32 flex flex-col gap-6">
+<div class="w-14 h-14 rounded-2xl bg-primary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl">shield_person</span>
+</div>
+<div class="space-y-3">
+<h3 class="font-headline-md text-xl">Autonomous Defense</h3>
+<p class="font-body-md text-body-md text-text-secondary">Self-healing firewall protocols that evolve with polymorphic malware signatures.</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="glass-card p-8 rounded-32 flex flex-col gap-6">
+<div class="w-14 h-14 rounded-2xl bg-secondary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-3xl">psychology</span>
+</div>
+<div class="space-y-3">
+<h3 class="font-headline-md text-xl">Predictive Analysis</h3>
+<p class="font-body-md text-body-md text-text-secondary">Identify vulnerabilities before they are exploited using massive data correlation.</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-card p-8 rounded-32 flex flex-col gap-6">
+<div class="w-14 h-14 rounded-2xl bg-tertiary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-3xl">key</span>
+</div>
+<div class="space-y-3">
+<h3 class="font-headline-md text-xl">Quantum Encryption</h3>
+<p class="font-body-md text-body-md text-text-secondary">Future-proof your assets with post-quantum lattice-based cryptographic layers.</p>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="glass-card p-8 rounded-32 flex flex-col gap-6">
+<div class="w-14 h-14 rounded-2xl bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl">public</span>
+</div>
+<div class="space-y-3">
+<h3 class="font-headline-md text-xl">Global Intelligence</h3>
+<p class="font-body-md text-body-md text-text-secondary">Real-time threat feed integration from worldwide security research centers.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Process Section -->
+<section id="intelligence" class="py-section-gap px-8 bg-surface-container-low/20 relative overflow-hidden">
+<div class="max-w-7xl mx-auto">
+<div class="text-center mb-24">
+<h2 class="font-headline-lg text-headline-lg">Streamlined Security Pipeline</h2>
+</div>
+<div class="relative flex flex-col md:flex-row justify-between items-start gap-12">
+<!-- Progress Line -->
+<div class="hidden md:block absolute top-12 left-0 w-full h-[2px] bg-gradient-to-r from-primary/10 via-primary/40 to-primary/10 -z-10"></div>
+<!-- Step 1 -->
+<div class="flex-1 flex flex-col items-center text-center group">
+<div class="w-24 h-24 rounded-full glass-card flex items-center justify-center mb-6 border-2 border-primary shadow-lg group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl">input</span>
+</div>
+<h4 class="font-headline-md text-lg mb-2">Traffic Collection</h4>
+<p class="font-body-md text-sm text-text-secondary px-4">Raw packet ingestion across multi-cloud environments.</p>
+</div>
+<!-- Step 2 -->
+<div class="flex-1 flex flex-col items-center text-center group">
+<div class="w-24 h-24 rounded-full glass-card flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl">memory</span>
+</div>
+<h4 class="font-headline-md text-lg mb-2">AI Processing</h4>
+<p class="font-body-md text-sm text-text-secondary px-4">Neural screening with sub-millisecond latency.</p>
+</div>
+<!-- Step 3 -->
+<div class="flex-1 flex flex-col items-center text-center group">
+<div class="w-24 h-24 rounded-full glass-card flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl">radar</span>
+</div>
+<h4 class="font-headline-md text-lg mb-2">Threat Detection</h4>
+<p class="font-body-md text-sm text-text-secondary px-4">Anomaly correlation using deep pattern recognition.</p>
+</div>
+<!-- Step 4 -->
+<div class="flex-1 flex flex-col items-center text-center group">
+<div class="w-24 h-24 rounded-full glass-card flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl">contact_support</span>
+</div>
+<h4 class="font-headline-md text-lg mb-2">Explainable AI</h4>
+<p class="font-body-md text-sm text-text-secondary px-4">Understand the 'Why' behind every security decision.</p>
+</div>
+<!-- Step 5 -->
+<div class="flex-1 flex flex-col items-center text-center group">
+<div class="w-24 h-24 rounded-full glass-card flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl">dashboard_customize</span>
+</div>
+<h4 class="font-headline-md text-lg mb-2">Security Dashboard</h4>
+<p class="font-body-md text-sm text-text-secondary px-4">Consolidated visual intelligence and control.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Statistics -->
+<section id="security" class="py-section-gap px-8 max-w-7xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="neo-card p-10 rounded-32 text-center transform hover:scale-105 transition-all">
+<p class="font-display-lg text-primary text-5xl mb-4">99.9%</p>
+<p class="font-headline-md text-lg text-on-surface">Detection Accuracy</p>
+<p class="font-body-md text-text-secondary mt-2">Verified by leading security audits</p>
+</div>
+<div class="neo-card p-10 rounded-32 text-center transform hover:scale-105 transition-all">
+<p class="font-display-lg text-primary text-5xl mb-4">25K+</p>
+<p class="font-headline-md text-lg text-on-surface">Threats Processed</p>
+<p class="font-body-md text-text-secondary mt-2">Aggregated threats per minute</p>
+</div>
+<div class="neo-card p-10 rounded-32 text-center transform hover:scale-105 transition-all">
+<p class="font-display-lg text-primary text-5xl mb-4">5ms</p>
+<p class="font-headline-md text-lg text-on-surface">Response Time</p>
+<p class="font-body-md text-text-secondary mt-2">Near-instant automated mitigation</p>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section id="enterprise" class="py-section-gap px-8 max-w-5xl mx-auto">
+<div class="glass-card p-16 rounded-[48px] text-center relative overflow-hidden">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-container/10 blur-[100px] rounded-full -mr-32 -mt-32"></div>
+<div class="absolute bottom-0 left-0 w-64 h-64 bg-secondary-container/10 blur-[100px] rounded-full -ml-32 -mb-32"></div>
+<h2 class="font-headline-lg text-4xl mb-8 relative z-10">Ready to Secure Your Digital Infrastructure?</h2>
+<p class="font-body-lg text-body-lg text-text-secondary mb-12 max-w-2xl mx-auto relative z-10">
+                    Join 500+ global enterprises that trust SecureNet AI to protect their most valuable digital assets.
+                </p>
+<div class="flex flex-wrap justify-center gap-6 relative z-10">
+<button class="px-10 py-5 rounded-full neo-button-primary text-on-primary font-button text-lg hover:px-12 transition-all">Get Started</button>
+<button onclick="openDemoModal()" class="px-10 py-5 rounded-full neo-button-secondary text-primary font-button text-lg hover:px-12 transition-all">Watch Demo</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container border-t border-glass-border w-full py-12 px-8 mt-20">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-gutter">
+<div class="flex flex-col gap-4">
+<span class="font-display-lg text-2xl text-on-surface">SecureNet AI</span>
+<p class="font-body-md text-body-md text-text-secondary">© 2026 SecureNet AI. All rights reserved.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="font-body-md text-body-md text-text-secondary hover:text-primary transition-opacity opacity-80 hover:opacity-100" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-text-secondary hover:text-primary transition-opacity opacity-80 hover:opacity-100" href="#">Terms of Service</a>
+<a class="font-body-md text-body-md text-text-secondary hover:text-primary transition-opacity opacity-80 hover:opacity-100" href="#">Security Compliance</a>
+<a class="font-body-md text-body-md text-text-secondary hover:text-primary transition-opacity opacity-80 hover:opacity-100" href="#">Status</a>
+<a class="font-body-md text-body-md text-text-secondary hover:text-primary transition-opacity opacity-80 hover:opacity-100" href="#">Contact</a>
+</div>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full neo-button-secondary flex items-center justify-center text-primary" href="#">
+<span class="material-symbols-outlined text-xl">language</span>
+</a>
+<a class="w-10 h-10 rounded-full neo-button-secondary flex items-center justify-center text-primary" href="#">
+<span class="material-symbols-outlined text-xl">share</span>
+</a>
+</div>
+</div>
+</footer>
+<!-- Demo Modal -->
+<div id="demoModal" class="demo-modal">
+<div class="demo-modal-backdrop" onclick="closeDemoModal()"></div>
+<div class="demo-modal-panel">
+<button class="demo-modal-close" onclick="closeDemoModal()" aria-label="Close">&times;</button>
+<div class="demo-modal-body">
+
+  <!-- ── Demo Video Player ── -->
+  <div class="demo-video-wrap">
+    <div class="demo-video-ratio">
+      <video id="demoVideo"
+             muted
+             controls
+             playsinline
+             preload="metadata">
+        <source src="assets/demo_video.mp4" type="video/mp4">
+      </video>
+      <div class="demo-video-loader" id="demoVideoLoader">
+        <div class="demo-video-spinner"></div>
+      </div>
+      <div class="demo-video-error" id="demoVideoError">
+        Unable to load demo video.
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-modal-info">
+    <h3>How It Works</h3>
+    <p>SecureNet AI analyzes network traffic in real-time using advanced neural models to detect and classify threats before they cause harm.</p>
+    <ul>
+      <li>Network traffic is continuously monitored and analyzed across all connected endpoints.</li>
+      <li>The AI model classifies each flow as Normal or Anomalous with high precision.</li>
+      <li>A confidence score is generated for each prediction to support security decisions.</li>
+      <li>A plain-English explanation is displayed for every threat prediction.</li>
+    </ul>
+  </div>
+  <div class="demo-modal-actions">
+    <button onclick="window.location.href='dashboard.html'" class="demo-modal-btn-primary">Launch Dashboard</button>
+    <button onclick="closeDemoModal()" class="demo-modal-btn-secondary">Close</button>
+  </div>
+</div>
+</div>
+</div>
+<script>
+        // Theme Toggle
+        (function() {
+            const html = document.documentElement;
+            const toggle = document.getElementById('themeToggle');
+            const saved = localStorage.getItem('theme');
+
+            if (saved) {
+                html.classList.toggle('dark', saved === 'dark');
+            } else {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                html.classList.toggle('dark', prefersDark);
+            }
+
+            function toggleTheme() {
+                html.classList.toggle('dark');
+                localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+            }
+
+            toggle.addEventListener('click', toggleTheme);
+            toggle.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleTheme(); }
+            });
+        })();
+
+        // Demo Modal
+        function openDemoModal() {
+            document.getElementById('demoModal').classList.add('active');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeDemoModal() {
+            document.getElementById('demoModal').classList.remove('active');
+            document.body.classList.remove('modal-open');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const m = document.getElementById('demoModal');
+                if (m && m.classList.contains('active')) closeDemoModal();
+            }
+        });
+
+        // ── Demo Video Player ──
+        (function() {
+            const video  = document.getElementById('demoVideo');
+            const loader = document.getElementById('demoVideoLoader');
+            const error  = document.getElementById('demoVideoError');
+
+            if (!video) return;
+
+            // Hide the loading overlay as soon as the browser knows the duration.
+            // loadedmetadata fires after the moov atom is fetched (preload="metadata"),
+            // which is all that's needed for the seek bar to become interactive.
+            video.addEventListener('loadedmetadata', function() {
+                if (loader) loader.classList.add('hidden');
+            });
+
+            // Belt-and-braces: also hide on canplay in case loadedmetadata already fired
+            video.addEventListener('canplay', function() {
+                if (loader) loader.classList.add('hidden');
+            });
+
+            // Show error overlay if the source cannot be fetched at all
+            video.addEventListener('error', function() {
+                if (loader) loader.classList.add('hidden');
+                if (error)  error.classList.add('visible');
+            });
+
+            // openDemoModal: show the spinner only on the very first open (or after a
+            // close).  Reset currentTime instead of calling video.load() so the browser
+            // keeps its existing buffer and HTTP range state — seeking stays fully
+            // functional throughout the session.
+            let hasLoaded = false;
+            const originalOpen = window.openDemoModal;
+            window.openDemoModal = function() {
+                originalOpen();
+                if (error) error.classList.remove('visible');
+
+                if (!hasLoaded) {
+                    // First open: show spinner until loadedmetadata fires
+                    hasLoaded = true;
+                    if (loader) loader.classList.remove('hidden');
+                }
+
+                // Rewind to start without aborting the network fetch
+                video.currentTime = 0;
+                video.play().catch(function() {
+                    // Autoplay blocked — the user can press play manually
+                });
+            };
+
+            // closeDemoModal: just pause; do not touch currentTime or call load()
+            const originalClose = window.closeDemoModal;
+            window.closeDemoModal = function() {
+                originalClose();
+                video.pause();
+            };
+        })();
+
+        // Smooth reveal interaction on scroll
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-10');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section > div').forEach(el => {
+            el.classList.add('transition-all', 'duration-1000', 'opacity-0', 'translate-y-10');
+            observer.observe(el);
+        });
+
+        // Nav active state, center-scroll, and scroll spy
+        (function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const indicator = document.getElementById('navIndicator');
+            const sectionIds = ['solutions', 'platform', 'intelligence', 'security', 'enterprise'];
+
+            navLinks.forEach(link => {
+                const orig = link.style.fontWeight;
+                link.style.fontWeight = '700';
+                const boldW = link.getBoundingClientRect().width;
+                link.style.fontWeight = orig || '';
+                link.style.minWidth = boldW + 'px';
+                link.style.textAlign = 'center';
+            });
+
+            function moveIndicator(link, instant) {
+                if (!indicator || !link) return;
+                const x = link.offsetLeft;
+                const w = link.offsetWidth;
+                if (instant) indicator.style.transition = 'none';
+                indicator.style.width = w + 'px';
+                indicator.style.transform = 'translateX(' + x + 'px)';
+                if (instant) requestAnimationFrame(() => { indicator.style.transition = ''; });
+            }
+
+            let lastSection = '';
+            function setActiveNav(id) {
+                if (id === lastSection) return;
+                lastSection = id;
+                navLinks.forEach(link => {
+                    const isActive = link.getAttribute('href') === '#' + id;
+                    link.classList.toggle('active', isActive);
+                });
+                const active = document.querySelector('.nav-link.active');
+                if (active) moveIndicator(active);
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const id = link.getAttribute('href').slice(1);
+                    const target = document.getElementById(id);
+                    if (!target) return;
+                    e.preventDefault();
+                    setActiveNav(id);
+                    const offset = Math.max(0, (window.innerHeight - target.offsetHeight) / 2);
+                    const top = target.offsetTop - offset;
+                    window.scrollTo({ top: top, behavior: 'smooth' });
+                });
+            });
+
+            function scrollSpy() {
+                const scrollPos = window.scrollY + 150;
+                let current = sectionIds[0];
+                for (const id of sectionIds) {
+                    const section = document.getElementById(id);
+                    if (section && section.offsetTop <= scrollPos) {
+                        current = id;
+                    }
+                }
+                setActiveNav(current);
+            }
+
+            scrollSpy();
+            window.addEventListener('scroll', () => { scrollSpy(); }, { passive: true });
+            window.addEventListener('resize', () => {
+                const active = document.querySelector('.nav-link.active');
+                if (active) moveIndicator(active, true);
+            });
+        })();
+
+        // Hover tilt effect for neo-cards (micro-interaction)
+        document.querySelectorAll('.neo-card, .glass-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)`;
+            });
+        });
+    </script>
+</body></html>

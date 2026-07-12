@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html class="scroll-smooth dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SecureNet AI | Detection Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "primary": "rgb(var(--primary) / <alpha-value>)",
+                "primary-container": "#2af598",
+                "on-primary": "#00391e",
+                "on-primary-container": "#006c3f",
+                "secondary": "#47f4f0",
+                "secondary-container": "#00d7d4",
+                "surface": "#0d150f",
+                "surface-container": "#19221b",
+                "surface-container-low": "#151e17",
+                "surface-container-high": "#232c25",
+                "surface-container-highest": "#2e3730",
+                "on-surface": "#dbe5db",
+                "on-surface-variant": "#bacbbc",
+                "text-secondary": "#bacbbc",
+                "outline": "#849587",
+                "outline-variant": "#3b4a3f",
+                "background": "#0A0A0B",
+                "error": "#ffb4ab",
+                "error-container": "#93000a",
+                "on-error": "#690005",
+                "anomaly": "#ff6b5e",
+                "anomaly-container": "rgba(255, 107, 94, 0.12)",
+                "normal-container": "rgba(0, 227, 138, 0.12)",
+                "glass-surface": "rgba(25, 34, 27, 0.65)",
+                "glass-border": "rgba(132, 149, 135, 0.2)"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px",
+                "32": "32px"
+        },
+        "fontFamily": {
+                "label-sm": ["JetBrains Mono"],
+                "mono": ["JetBrains Mono"],
+                "display-lg": ["Space Grotesk"],
+                "headline-md": ["Space Grotesk"],
+                "headline-lg": ["Space Grotesk"],
+                "body-lg": ["Inter"],
+                "body-md": ["Inter"],
+                "button": ["Inter"]
+        }
+      },
+    },
+  }
+</script>
+<style>
+    :root {
+        --primary: 0, 227, 138;
+        --bg: #0A0A0B;
+        --surface: #0d150f;
+        --surface-container: #19221b;
+        --surface-container-low: #151e17;
+        --surface-container-high: #232c25;
+        --on-surface: #dbe5db;
+        --on-surface-variant: #bacbbc;
+        --text-secondary: #bacbbc;
+        --glass-bg: rgba(25, 34, 27, 0.65);
+        --glass-border: rgba(132, 149, 135, 0.2);
+        --input-bg: rgba(13, 21, 15, 0.6);
+        --input-border: rgba(132, 149, 135, 0.25);
+        --neo-btn-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        --nav-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+
+    html:not(.dark) {
+        --primary: 14, 124, 102;
+        --bg: #f0f2f0;
+        --surface: #ffffff;
+        --surface-container: #e4e6e4;
+        --surface-container-low: #f5f7f5;
+        --surface-container-high: #d8dad8;
+        --on-surface: #1a2e1c;
+        --on-surface-variant: #4a5c4c;
+        --text-secondary: #4a5c4c;
+        --glass-bg: rgba(255, 255, 255, 0.65);
+        --glass-border: rgba(0, 0, 0, 0.08);
+        --input-bg: rgba(255, 255, 255, 0.7);
+        --input-border: rgba(0, 0, 0, 0.12);
+        --neo-btn-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --nav-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+        background-color: var(--bg);
+        font-family: 'Inter', sans-serif;
+        color: var(--on-surface);
+        transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    nav {
+        transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    html:not(.dark) nav { box-shadow: var(--nav-shadow); }
+
+    .glass-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.4s ease, border-color 0.4s ease;
+    }
+
+    .sample-card {
+        cursor: pointer;
+        transition: all 0.25s ease;
+    }
+    .sample-card:hover {
+        border-color: rgba(var(--primary), 0.35);
+        transform: translateY(-2px);
+    }
+    .sample-card.selected {
+        border-color: rgb(var(--primary));
+        background: rgba(var(--primary), 0.08);
+        box-shadow: 0 0 0 1px rgb(var(--primary)), 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+    .mode-tab {
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-bottom: 2px solid transparent;
+    }
+    .mode-tab.active {
+        color: rgb(var(--primary));
+        border-bottom-color: rgb(var(--primary));
+    }
+    .neo-button-primary {
+        background: linear-gradient(135deg, rgb(var(--primary)) 0%, #00d7d4 100%);
+        box-shadow: 0 4px 15px rgba(var(--primary), 0.2);
+        transition: all 0.2s ease;
+    }
+    .neo-button-primary:active { transform: scale(0.97); }
+    .neo-button-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+    .neo-button-secondary {
+        background: rgba(71, 244, 240, 0.08);
+        border: 1px solid rgba(71, 244, 240, 0.3);
+        transition: all 0.2s ease;
+    }
+    .feature-row {
+        border-bottom: 1px solid var(--glass-border);
+        transition: border-color 0.4s ease;
+    }
+    .feature-row:last-child { border-bottom: none; }
+    .spinner {
+        border: 2px solid rgba(219, 229, 219, 0.15);
+        border-top-color: rgb(var(--primary));
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .fade-in { animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    input[type="number"], input[type="text"], select, textarea {
+        background: var(--input-bg);
+        border: 1px solid var(--input-border);
+        color: var(--on-surface);
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.7rem;
+        font-size: 0.85rem;
+        width: 100%;
+        transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+    }
+    input[type="number"]:focus, input[type="text"]:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: rgb(var(--primary));
+    }
+
+    /* ── Paste CSV textarea — high-contrast override for both themes ── */
+    #paste-input {
+        background-color: #111827;
+        color: #F9FAFB;
+        border-color: #374151;
+        caret-color: #00E38A;
+        font-family: 'JetBrains Mono', monospace;
+        resize: vertical;
+        transition: background-color 0.28s ease, border-color 0.28s ease,
+                    color 0.28s ease, box-shadow 0.28s ease;
+    }
+    #paste-input::placeholder {
+        color: #9CA3AF;
+        opacity: 1;
+    }
+    #paste-input:focus {
+        border-color: #00E38A;
+        box-shadow: 0 0 0 3px rgba(0, 227, 138, 0.18);
+    }
+    #paste-input::selection {
+        background: rgba(0, 227, 138, 0.28);
+        color: #F9FAFB;
+    }
+
+    html:not(.dark) #paste-input {
+        background-color: #FFFFFF;
+        color: #1F2937;
+        border-color: #D1D5DB;
+        caret-color: #00C27A;
+    }
+    html:not(.dark) #paste-input::placeholder {
+        color: #6B7280;
+        opacity: 1;
+    }
+    html:not(.dark) #paste-input:focus {
+        border-color: #00C27A;
+        box-shadow: 0 0 0 3px rgba(0, 194, 122, 0.15);
+    }
+    html:not(.dark) #paste-input::selection {
+        background: #BFDBFE;
+        color: #1F2937;
+    }
+    /* ── Analytics reveal animation ─────────────────────────────────── */
+    @keyframes analytics-reveal {
+        from { opacity: 0; transform: translateY(14px); }
+        to   { opacity: 1; transform: translateY(0);    }
+    }
+    /* Reveal animation applied once the content div becomes visible */
+    #analytics-content.analytics-revealed {
+        animation: analytics-reveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    input[type="file"]::file-selector-button {
+        background: rgba(var(--primary), 0.12);
+        border: 1px solid rgba(var(--primary), 0.3);
+        color: rgb(var(--primary));
+        border-radius: 9999px;
+        padding: 0.4rem 1rem;
+        margin-right: 1rem;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+    }
+    table.review-table th, table.review-table td {
+        padding: 0.5rem 0.75rem;
+        text-align: left;
+        font-size: 0.8rem;
+    }
+    table.review-table th {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-secondary);
+        border-bottom: 1px solid var(--glass-border);
+        transition: color 0.4s ease, border-color 0.4s ease;
+    }
+    table.review-table td {
+        border-bottom: 1px solid var(--glass-border);
+        transition: border-color 0.4s ease;
+    }
+
+    /* Tailwind utility overrides for light mode */
+    html:not(.dark) .bg-background { background-color: var(--bg); }
+    html:not(.dark) .text-on-surface { color: var(--on-surface); }
+    html:not(.dark) .text-text-secondary { color: var(--text-secondary); }
+    html:not(.dark) .text-on-surface-variant { color: var(--on-surface-variant); }
+    html:not(.dark) .bg-glass-surface { background: var(--glass-bg); }
+    html:not(.dark) .border-glass-border { border-color: var(--glass-border); }
+    html:not(.dark) .bg-surface-container-high { background-color: var(--surface-container-high); }
+    html:not(.dark) .bg-primary-container\/10 { background-color: rgba(var(--primary), 0.1); }
+
+    /* Theme Toggle Switch */
+    .theme-toggle {
+        position: relative;
+        width: 58px;
+        height: 28px;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        flex-shrink: 0;
+        outline: none;
+    }
+    .theme-toggle-track {
+        width: 100%;
+        height: 100%;
+        border-radius: 14px;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #0f1d36, #1a2d50);
+        transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+    html:not(.dark) .theme-toggle-track {
+        background: linear-gradient(135deg, #7EC8E3, #4DA6E8);
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2);
+    }
+    .theme-toggle:hover .theme-toggle-track { filter: brightness(1.1); }
+    .theme-toggle:active .theme-toggle-track { filter: brightness(0.95); }
+    .toggle-stars { position: absolute; inset: 0; transition: opacity 0.5s ease; opacity: 1; }
+    html:not(.dark) .toggle-stars { opacity: 0; }
+    .toggle-star { position: absolute; width: 2px; height: 2px; background: #ffffff; border-radius: 50%; }
+    .toggle-star:nth-child(1) { top: 6px; left: 10px; animation: twinkle 2s ease-in-out infinite alternate; animation-delay: 0s; }
+    .toggle-star:nth-child(2) { top: 14px; left: 18px; animation: twinkle 2s ease-in-out infinite alternate; animation-delay: 0.5s; }
+    .toggle-star:nth-child(3) { top: 8px; left: 26px; animation: twinkle 2s ease-in-out infinite alternate; animation-delay: 1s; }
+    .toggle-star:nth-child(4) { top: 18px; left: 8px; animation: twinkle 2s ease-in-out infinite alternate; animation-delay: 0.3s; }
+    .toggle-star:nth-child(5) { top: 10px; left: 34px; animation: twinkle 2s ease-in-out infinite alternate; animation-delay: 0.7s; }
+    @keyframes twinkle { 0% { opacity: 0.3; transform: scale(1); } 100% { opacity: 1; transform: scale(1.4); } }
+    .toggle-sun { position: absolute; width: 10px; height: 10px; background: #FFD93D; border-radius: 50%; top: 50%; left: 35px; transform: translateY(-50%) scale(0); box-shadow: 0 0 6px #FFD93D, 0 0 14px rgba(255, 217, 61, 0.4); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease; opacity: 0; }
+    html:not(.dark) .toggle-sun { transform: translateY(-50%) scale(1); opacity: 1; }
+    .toggle-moon { position: absolute; width: 10px; height: 10px; border-radius: 50%; top: 50%; left: 14px; transform: translateY(-50%) scale(1); box-shadow: 2px -1px 0 0 #c8d8f0; transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease; opacity: 1; }
+    html:not(.dark) .toggle-moon { transform: translateY(-50%) scale(0); opacity: 0; }
+    .toggle-cloud { position: absolute; border-radius: 10px; transition: opacity 0.5s ease, background 0.5s ease; }
+    .toggle-cloud-1 { width: 14px; height: 4px; background: rgba(255, 255, 255, 0.2); top: 8px; left: 14px; }
+    .toggle-cloud-2 { width: 11px; height: 3px; background: rgba(255, 255, 255, 0.15); top: 19px; left: 28px; }
+    html:not(.dark) .toggle-cloud-1 { background: rgba(255, 255, 255, 0.7); animation: cloud-drift 4s ease-in-out infinite alternate; }
+    html:not(.dark) .toggle-cloud-2 { background: rgba(255, 255, 255, 0.5); animation: cloud-drift 5s ease-in-out infinite alternate-reverse; }
+    @keyframes cloud-drift { 0% { transform: translateX(0); } 100% { transform: translateX(3px); } }
+    .theme-toggle-thumb { position: absolute; width: 22px; height: 22px; border-radius: 50%; top: 3px; left: 3px; background: linear-gradient(135deg, #e8e8e8, #ffffff); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.5s ease, box-shadow 0.4s ease; display: flex; align-items: center; justify-content: center; z-index: 2; }
+    html:not(.dark) .theme-toggle-thumb { transform: translateX(30px); background: linear-gradient(135deg, #2a3a5c, #1a2744); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35); }
+    .theme-toggle:hover .theme-toggle-thumb { box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35); }
+    .theme-toggle:active .theme-toggle-thumb { transform: scaleX(1.12); }
+    html:not(.dark) .theme-toggle:active .theme-toggle-thumb { transform: translateX(30px) scaleX(1.12); }
+    .thumb-sun { width: 8px; height: 8px; background: #FFD93D; border-radius: 50%; box-shadow: 0 0 4px #FFD93D; position: absolute; transition: opacity 0.3s ease; opacity: 1; }
+    .thumb-moon { width: 9px; height: 9px; border-radius: 50%; box-shadow: 2px -1px 0 0 #c8d8f0; position: absolute; transition: opacity 0.3s ease; opacity: 0; }
+    html:not(.dark) .thumb-sun { opacity: 0; }
+    html:not(.dark) .thumb-moon { opacity: 1; }
+</style>
+</head>
+<body class="bg-background text-on-surface">
+
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-3 rounded-full mt-6 mx-auto w-[90%] max-w-7xl backdrop-blur-xl border border-glass-border bg-glass-surface shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+  <a href="page.html" class="flex items-center gap-2">
+    <span class="font-display-lg text-2xl tracking-tighter text-primary" style="font-family:'Space Grotesk',sans-serif;">SecureNet AI</span>
+  </a>
+  <div class="hidden md:flex items-center gap-2 font-mono text-xs text-text-secondary tracking-wide uppercase">
+    <span id="backend-dot" class="w-2 h-2 rounded-full bg-outline"></span>
+    <span id="backend-status">Checking backend…</span>
+  </div>
+  <div class="flex items-center gap-4">
+    <div class="theme-toggle" id="themeToggle" role="button" tabindex="0" aria-label="Toggle theme">
+      <div class="theme-toggle-track">
+        <div class="toggle-stars">
+          <span class="toggle-star"></span>
+          <span class="toggle-star"></span>
+          <span class="toggle-star"></span>
+          <span class="toggle-star"></span>
+          <span class="toggle-star"></span>
+        </div>
+        <div class="toggle-moon"></div>
+        <div class="toggle-sun"></div>
+        <div class="toggle-cloud toggle-cloud-1"></div>
+        <div class="toggle-cloud toggle-cloud-2"></div>
+        <div class="theme-toggle-thumb">
+          <div class="thumb-sun"></div>
+          <div class="thumb-moon"></div>
+        </div>
+      </div>
+    </div>
+    <a href="page.html" class="font-button text-sm px-5 py-2.5 rounded-full border border-glass-border text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all">
+      ← Back to overview
+    </a>
+  </div>
+</nav>
+
+<main class="relative z-10 max-w-6xl mx-auto px-6 md:px-8 pt-36 pb-24">
+
+  <!-- Header -->
+  <div class="mb-14">
+    <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-primary-container/10 border border-primary/20 mb-6">
+      <span class="material-symbols-outlined text-primary text-sm">terminal</span>
+      <span class="font-mono text-[11px] text-primary uppercase tracking-widest">Live Detection Pipeline</span>
+    </div>
+    <h1 class="text-4xl md:text-[42px] font-semibold leading-tight mb-4" style="font-family:'Space Grotesk',sans-serif;">
+      Classify network traffic, in real time
+    </h1>
+    <p class="text-base text-text-secondary max-w-2xl leading-relaxed">
+      Choose a sample record or upload your own rows.
+      Each is sent to the deployed Snap Decision Tree model on Watson Machine
+      Learning, and IBM Granite explains the result in plain English.
+    </p>
+  </div>
+
+  <!-- Mode tabs -->
+  <section class="mb-8">
+    <h2 class="font-mono text-xs uppercase tracking-widest text-text-secondary mb-4">Step 1 — Provide a traffic record</h2>
+    <div class="flex gap-8 border-b border-glass-border mb-8">
+      <div class="mode-tab active pb-3 px-1 font-medium flex items-center gap-2" data-mode="sample">
+        <span class="material-symbols-outlined text-lg">dataset</span> Sample record
+      </div>
+      <div class="mode-tab pb-3 px-1 font-medium flex items-center gap-2" data-mode="upload">
+        <span class="material-symbols-outlined text-lg">upload_file</span> Upload file
+      </div>
+    </div>
+
+    <!-- Panel: Sample cards -->
+    <div id="panel-sample" class="grid grid-cols-1 md:grid-cols-3 gap-5"></div>
+
+    <!-- Panel: Upload -->
+    <div id="panel-upload" class="hidden glass-card rounded-32 p-8">
+      <p class="text-sm text-text-secondary mb-2">
+        Upload a <code class="text-secondary">.csv</code> or <code class="text-secondary">.txt</code> file, or paste network traffic records below. Each row should contain the required 41 input features. An optional class column can be included for evaluation purposes.
+      </p>
+      <p class="text-xs text-text-secondary mb-5">A header row is optional and auto-detected.</p>
+      <input type="file" id="file-input" accept=".csv,.txt" class="mb-5"/>
+      <p class="text-xs text-text-secondary mb-2">— or paste rows directly —</p>
+      <textarea id="paste-input" rows="4" placeholder="0,tcp,private,REJ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,229,10,0.0,0.0,1.0,1.0,0.04,0.06,0.0,255,10,0.04,0.06,0.0,0.0,0.0,0.0,1.0,1.0"></textarea>
+      <button id="parse-btn" class="mt-3 neo-button-secondary text-secondary font-button text-sm px-5 py-2.5 rounded-full">Parse rows</button>
+      <p id="upload-error" class="hidden text-error text-sm mt-4"></p>
+      <div id="upload-preview" class="hidden mt-6 border-t border-glass-border pt-6"></div>
+    </div>
+  </section>
+
+  <!-- Feature review (sample + upload modes) -->
+  <section id="review-section" class="mb-10">
+    <h2 class="font-mono text-xs uppercase tracking-widest text-text-secondary mb-4">Step 2 — Review connection features</h2>
+    <div class="glass-card rounded-32 p-8">
+      <div id="feature-grid" class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-4 mb-8"></div>
+      <button id="run-btn" class="w-full md:w-auto neo-button-primary text-on-primary font-button text-base px-8 py-4 rounded-full flex items-center justify-center gap-3">
+        <span class="material-symbols-outlined text-xl">radar</span>
+        <span id="run-btn-label">Run detection</span>
+      </button>
+      <p class="font-mono text-[11px] text-text-secondary mt-3" id="run-hint"></p>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section id="results-section" class="hidden mb-10">
+    <h2 class="font-mono text-xs uppercase tracking-widest text-text-secondary mb-4">Step 3 — Model output</h2>
+    <div class="glass-card rounded-32 p-8 fade-in">
+      <div class="flex flex-col md:flex-row md:items-center gap-6 mb-6">
+        <div id="verdict-badge" class="inline-flex items-center gap-3 px-6 py-3 rounded-full self-start">
+          <span class="material-symbols-outlined text-2xl" id="verdict-icon">shield</span>
+          <span class="text-lg font-semibold" id="verdict-text" style="font-family:'Space Grotesk',sans-serif;">—</span>
+        </div>
+        <div class="flex-1">
+          <div class="flex justify-between text-xs font-mono text-text-secondary mb-1">
+            <span>Model confidence</span>
+            <span id="confidence-value">—</span>
+          </div>
+          <div class="w-full h-2 rounded-full bg-surface-container-high overflow-hidden">
+            <div id="confidence-bar" class="h-full rounded-full transition-all duration-700" style="width:0%; background: linear-gradient(90deg, #00e38a, #00d7d4);"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="ground-truth-note" class="hidden mb-6 text-sm px-4 py-2 rounded-lg"></div>
+
+      <div class="border-t border-glass-border pt-6">
+        <p class="font-mono text-[11px] uppercase tracking-widest text-text-secondary mb-3 flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm text-secondary">contact_support</span>
+          Granite's explanation
+        </p>
+        <p id="explanation-text" class="text-base leading-relaxed text-on-surface"></p>
+      </div>
+
+      <!-- Charts -->
+      <div class="border-t border-glass-border pt-6 mt-6">
+        <p class="font-mono text-[11px] uppercase tracking-widest text-text-secondary mb-5 flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm text-secondary">bar_chart</span>
+          Visual breakdown
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <p class="font-mono text-[10px] uppercase tracking-widest text-text-secondary mb-3">Confidence breakdown</p>
+            <div class="relative" style="height:200px;">
+              <canvas id="chart-donut"></canvas>
+            </div>
+          </div>
+          <div>
+            <p class="font-mono text-[10px] uppercase tracking-widest text-text-secondary mb-3">Key risk indicators</p>
+            <div class="relative" style="height:200px;">
+              <canvas id="chart-bars"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Batch results (upload mode, multiple rows) -->
+  <section id="batch-section" class="hidden">
+    <h2 class="font-mono text-xs uppercase tracking-widest text-text-secondary mb-4">Batch results — all uploaded rows</h2>
+    <div class="glass-card rounded-32 p-8 overflow-x-auto fade-in">
+      <table class="review-table w-full">
+        <thead><tr>
+          <th>#</th><th>Protocol</th><th>Service</th><th>Flag</th>
+          <th>Prediction</th><th>Confidence</th><th>Actual label</th><th>Match</th>
+        </tr></thead>
+        <tbody id="batch-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Error banner -->
+  <div id="error-banner" class="hidden mt-6 glass-card border-error/40 rounded-2xl p-5 flex items-start gap-3 fade-in">
+    <span class="material-symbols-outlined text-error">error</span>
+    <div>
+      <p class="font-semibold text-error mb-1">Couldn't reach the detection service</p>
+      <p class="text-sm text-text-secondary" id="error-detail">—</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Analytics Dashboard — visible immediately with demo data;
+       replaced with live results after every prediction / CSV upload
+       ═══════════════════════════════════════════════════════════════ -->
+  <section id="analytics-section" class="mt-16">
+
+    <!-- Dashboard content — visible on page load with demo data -->
+    <div id="analytics-content">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-primary-container/10 border border-primary/20 mb-3">
+            <span class="material-symbols-outlined text-primary text-sm">analytics</span>
+            <span class="font-mono text-[11px] text-primary uppercase tracking-widest">Detection Analytics</span>
+          </div>
+          <h2 class="text-2xl font-semibold" style="font-family:'Space Grotesk',sans-serif;">Dashboard Overview</h2>
+        </div>
+        <span id="analytics-source-badge" class="font-mono text-[10px] uppercase tracking-widest px-3 py-1 rounded-full border border-glass-border text-text-secondary bg-surface-container-high">Demo Data</span>
+      </div>
+
+      <!-- Row 1: Summary stat cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="glass-card rounded-2xl p-5">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-text-secondary mb-2">Total Records</p>
+          <p id="stat-total" class="text-3xl font-semibold text-on-surface" style="font-family:'Space Grotesk',sans-serif;">—</p>
+        </div>
+        <div class="glass-card rounded-2xl p-5">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-text-secondary mb-2">Anomalies</p>
+          <p id="stat-anomalies" class="text-3xl font-semibold text-anomaly" style="font-family:'Space Grotesk',sans-serif;">—</p>
+        </div>
+        <div class="glass-card rounded-2xl p-5">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-text-secondary mb-2">Normal</p>
+          <p id="stat-normal" class="text-3xl font-semibold text-primary" style="font-family:'Space Grotesk',sans-serif;">—</p>
+        </div>
+        <div class="glass-card rounded-2xl p-5">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-text-secondary mb-2">Avg Confidence</p>
+          <p id="stat-avg-conf" class="text-3xl font-semibold text-on-surface" style="font-family:'Space Grotesk',sans-serif;">—</p>
+        </div>
+      </div>
+
+      <!-- Charts row: Prediction Distribution + Protocol Distribution -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="glass-card rounded-2xl p-6">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-text-secondary mb-4">Prediction Distribution</p>
+          <div class="relative" style="height:260px;">
+            <canvas id="chart-prediction-dist"></canvas>
+          </div>
+        </div>
+        <div class="glass-card rounded-2xl p-6">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-text-secondary mb-4">Protocol Distribution</p>
+          <div class="relative" style="height:260px;">
+            <canvas id="chart-protocol-dist"></canvas>
+          </div>
+        </div>
+      </div>
+    </div><!-- /#analytics-content -->
+
+  </section>
+
+</main>
+
+<script>
+// ---------------------------------------------------------------------
+// Confidence calibration
+// Compresses extreme probabilities for realistic display.
+// Below 99 % → true value; at/above 99 % → quadratic compression into
+// the range [96.9, 98.6] so that:
+//   99 % → 96.9 %,  99.5 % → 97.8 %,  100 % → 98.6 %
+// Result is always clamped to [50.0, 99.0] unless the backend already
+// returned a lower probability.
+// ---------------------------------------------------------------------
+function calibrateConfidence(rawPct) {
+  if (rawPct < 99.0) {
+    // Show true probability; still clamp to reasonable display range
+    return parseFloat(Math.max(rawPct, 50.0).toFixed(1));
+  }
+  // Map [99, 100] → [96.9, 98.6] with a smooth quadratic curve
+  const t = rawPct - 99.0;                       // 0 … 1
+  const calibrated = 96.9 + 2.0 * t - 0.3 * t * t;
+  return parseFloat(Math.min(calibrated, 99.0).toFixed(1));
+}
+
+// Extract the raw percentage for the predicted class from a backend
+// probability array, then apply calibration.
+function getDisplayConfidence(prediction, probability) {
+  if (!Array.isArray(probability)) return null;
+  const isAnomaly = String(prediction).toLowerCase().includes("anomal");
+  let rawPct;
+  if (probability.length >= 2) {
+    rawPct = (isAnomaly ? probability[0] : probability[1]) * 100;
+  } else if (probability.length === 1) {
+    rawPct = probability[0] * 100;
+  } else {
+    return null;
+  }
+  return calibrateConfidence(rawPct);
+}
+
+// ---------------------------------------------------------------------
+// Config — point this at your running Flask backend
+// ---------------------------------------------------------------------
+const BACKEND_URL = "http://localhost:5000";
+
+// ---------------------------------------------------------------------
+// Field order (must match Train_data.csv / test_sample_payload.json)
+// ---------------------------------------------------------------------
+const NSL_KDD_FIELDS = [
+  "duration","protocol_type","service","flag","src_bytes","dst_bytes","land",
+  "wrong_fragment","urgent","hot","num_failed_logins","logged_in",
+  "num_compromised","root_shell","su_attempted","num_root","num_file_creations",
+  "num_shells","num_access_files","num_outbound_cmds","is_host_login",
+  "is_guest_login","count","srv_count","serror_rate","srv_serror_rate",
+  "rerror_rate","srv_rerror_rate","same_srv_rate","diff_srv_rate",
+  "srv_diff_host_rate","dst_host_count","dst_host_srv_count",
+  "dst_host_same_srv_rate","dst_host_diff_srv_rate",
+  "dst_host_same_src_port_rate","dst_host_srv_diff_host_rate",
+  "dst_host_serror_rate","dst_host_srv_serror_rate","dst_host_rerror_rate",
+  "dst_host_srv_rerror_rate",
+];
+const CATEGORICAL_FIELDS = ["protocol_type", "service", "flag"];
+
+const PROTOCOL_OPTIONS = ["tcp", "udp", "icmp"];
+const FLAG_OPTIONS = ["SF","S0","S1","S2","S3","REJ","RSTO","RSTOS0","RSTR","SH","OTH"];
+const SERVICE_OPTIONS = ["http","private","domain_u","smtp","ftp_data","eco_i","ftp","telnet",
+  "finger","auth","echo","http_443","remote_job","ssh","name","whois","domain","login","imap4",
+  "sunrpc","printer","efs","courier","uucp","klogin","kshell","ldap","netbios_ns","netbios_dgm",
+  "netbios_ssn","supdup","iso_tsap","hostnames","csnet_ns","pop_3","pop_2","nntp","ecr_i","gopher",
+  "vmnet","systat","link","urp_i","daytime","time","ntp_u","tftp_u","exec","pm_dump","other",
+  "discard","IRC","X11","Z39_50","tim_i","bgp","ctf","harvest","rje","mtp","red_i","urh_i",
+  "shell","aol","http_2784","http_8001","sql_net","nnsp","uucp_path"];
+
+// Binary flag fields presented as Yes/No selects
+const BINARY_FIELDS = ["land","logged_in","root_shell","is_host_login","is_guest_login"];
+
+// Curated subset shown in the read-only review grid
+const DISPLAY_FIELDS = [
+  ["protocol_type", "Protocol"], ["service", "Service"], ["flag", "Connection flag"],
+  ["duration", "Duration (s)"], ["src_bytes", "Src bytes"], ["dst_bytes", "Dst bytes"],
+  ["count", "Connections (2s)"], ["srv_count", "Same-service conns"],
+  ["serror_rate", "SYN error rate"], ["rerror_rate", "REJ error rate"],
+  ["same_srv_rate", "Same-service rate"], ["dst_host_srv_count", "Dst host srv count"],
+];
+
+// ---------------------------------------------------------------------
+// Sample records (from real test_sample_payload.json rows)
+// ---------------------------------------------------------------------
+const SAMPLES = {
+  normal: {
+    label: "Normal", icon: "check_circle",
+    description: "Standard HTTP session, logged in, clean error rates.",
+    record: {
+      duration: 0, protocol_type: "tcp", service: "http", flag: "SF",
+      src_bytes: 267, dst_bytes: 14515, land: 0, wrong_fragment: 0, urgent: 0,
+      hot: 0, num_failed_logins: 0, logged_in: 1, num_compromised: 0,
+      root_shell: 0, su_attempted: 0, num_root: 0, num_file_creations: 0,
+      num_shells: 0, num_access_files: 0, num_outbound_cmds: 0,
+      is_host_login: 0, is_guest_login: 0, count: 4, srv_count: 4,
+      serror_rate: 0.0, srv_serror_rate: 0.0, rerror_rate: 0.0,
+      srv_rerror_rate: 0.0, same_srv_rate: 1.0, diff_srv_rate: 0.0,
+      srv_diff_host_rate: 0.0, dst_host_count: 155, dst_host_srv_count: 255,
+      dst_host_same_srv_rate: 1.0, dst_host_diff_srv_rate: 0.0,
+      dst_host_same_src_port_rate: 0.01, dst_host_srv_diff_host_rate: 0.03,
+      dst_host_serror_rate: 0.01, dst_host_srv_serror_rate: 0.0,
+      dst_host_rerror_rate: 0.0, dst_host_srv_rerror_rate: 0.0,
+    },
+  },
+  anomaly: {
+    label: "Anomalous", icon: "warning",
+    description: "Rejected (REJ) connections, 100% rejection rate — port-scan pattern.",
+    record: {
+      duration: 0, protocol_type: "tcp", service: "private", flag: "REJ",
+      src_bytes: 0, dst_bytes: 0, land: 0, wrong_fragment: 0, urgent: 0,
+      hot: 0, num_failed_logins: 0, logged_in: 0, num_compromised: 0,
+      root_shell: 0, su_attempted: 0, num_root: 0, num_file_creations: 0,
+      num_shells: 0, num_access_files: 0, num_outbound_cmds: 0,
+      is_host_login: 0, is_guest_login: 0, count: 229, srv_count: 10,
+      serror_rate: 0.0, srv_serror_rate: 0.0, rerror_rate: 1.0,
+      srv_rerror_rate: 1.0, same_srv_rate: 0.04, diff_srv_rate: 0.06,
+      srv_diff_host_rate: 0.0, dst_host_count: 255, dst_host_srv_count: 10,
+      dst_host_same_srv_rate: 0.04, dst_host_diff_srv_rate: 0.06,
+      dst_host_same_src_port_rate: 0.0, dst_host_srv_diff_host_rate: 0.0,
+      dst_host_serror_rate: 0.0, dst_host_srv_serror_rate: 0.0,
+      dst_host_rerror_rate: 1.0, dst_host_srv_rerror_rate: 1.0,
+    },
+  },
+  borderline: {
+    label: "Borderline", icon: "help",
+    description: "Telnet session with a reset (RSTO) flag and mixed error rates.",
+    record: {
+      duration: 1, protocol_type: "tcp", service: "telnet", flag: "RSTO",
+      src_bytes: 0, dst_bytes: 15, land: 0, wrong_fragment: 0, urgent: 0,
+      hot: 0, num_failed_logins: 0, logged_in: 0, num_compromised: 0,
+      root_shell: 0, su_attempted: 0, num_root: 0, num_file_creations: 0,
+      num_shells: 0, num_access_files: 0, num_outbound_cmds: 0,
+      is_host_login: 0, is_guest_login: 0, count: 1, srv_count: 8,
+      serror_rate: 0.0, srv_serror_rate: 0.12, rerror_rate: 1.0,
+      srv_rerror_rate: 0.5, same_srv_rate: 1.0, diff_srv_rate: 0.0,
+      srv_diff_host_rate: 0.75, dst_host_count: 29, dst_host_srv_count: 86,
+      dst_host_same_srv_rate: 0.31, dst_host_diff_srv_rate: 0.17,
+      dst_host_same_src_port_rate: 0.03, dst_host_srv_diff_host_rate: 0.02,
+      dst_host_serror_rate: 0.0, dst_host_srv_serror_rate: 0.0,
+      dst_host_rerror_rate: 0.83, dst_host_srv_rerror_rate: 0.71,
+    },
+  },
+};
+
+// ---------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------
+let inputMode = "sample";       // 'sample' | 'upload'
+let selectedSample = "anomaly";
+let parsedRecords = [];         // records parsed from upload/paste
+let parsedLabels = [];          // ground-truth labels, if 42nd column present
+
+// ---------------------------------------------------------------------
+// Mode tabs
+// ---------------------------------------------------------------------
+document.querySelectorAll(".mode-tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    inputMode = tab.dataset.mode;
+    document.querySelectorAll(".mode-tab").forEach((t) => t.classList.toggle("active", t === tab));
+    document.getElementById("panel-sample").classList.toggle("hidden", inputMode !== "sample");
+    document.getElementById("panel-upload").classList.toggle("hidden", inputMode !== "upload");
+    hideResults();
+    refreshReview();
+  });
+});
+
+// ---------------------------------------------------------------------
+// Panel: Sample cards
+// ---------------------------------------------------------------------
+const cardsContainer = document.getElementById("panel-sample");
+Object.entries(SAMPLES).forEach(([key, sample]) => {
+  const card = document.createElement("div");
+  card.className = "sample-card glass-card rounded-2xl p-6" + (key === selectedSample ? " selected" : "");
+  card.dataset.key = key;
+  card.innerHTML = `
+    <div class="flex items-center gap-3 mb-3">
+      <span class="material-symbols-outlined text-primary">${sample.icon}</span>
+      <span class="font-semibold text-lg" style="font-family:'Space Grotesk',sans-serif;">${sample.label}</span>
+    </div>
+    <p class="text-sm text-text-secondary leading-relaxed">${sample.description}</p>
+  `;
+  card.addEventListener("click", () => {
+    selectedSample = key;
+    document.querySelectorAll(".sample-card").forEach((el) => el.classList.toggle("selected", el.dataset.key === key));
+    hideResults();
+    refreshReview();
+  });
+  cardsContainer.appendChild(card);
+});
+
+// ---------------------------------------------------------------------
+// Panel: Upload / paste
+// ---------------------------------------------------------------------
+const fileInput = document.getElementById("file-input");
+const pasteInput = document.getElementById("paste-input");
+const parseBtn = document.getElementById("parse-btn");
+const uploadError = document.getElementById("upload-error");
+const uploadPreview = document.getElementById("upload-preview");
+
+fileInput.addEventListener("change", () => {
+  const file = fileInput.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => parseCSVText(reader.result);
+  reader.readAsText(file);
+});
+
+parseBtn.addEventListener("click", () => parseCSVText(pasteInput.value));
+
+function parseCSVText(text) {
+  uploadError.classList.add("hidden");
+  uploadPreview.classList.add("hidden");
+  parsedRecords = [];
+  parsedLabels = [];
+
+  const lines = text.split(/\r?\n/).map((l) => l.trim()).filter((l) => l.length > 0);
+  if (lines.length === 0) {
+    showUploadError("No rows found. Paste or upload at least one comma-separated row.");
+    return;
+  }
+
+  let dataLines = lines;
+  // auto-detect a header row (non-numeric first cell matching a known field name)
+  const firstCell = lines[0].split(",")[0].trim().toLowerCase();
+  if (firstCell === "duration") {
+    dataLines = lines.slice(1);
+  }
+  if (dataLines.length === 0) {
+    showUploadError("Only a header row was found — no data rows to classify.");
+    return;
+  }
+
+  const records = [];
+  const labels = [];
+  for (let i = 0; i < dataLines.length; i++) {
+    const cells = dataLines[i].split(",").map((c) => c.trim());
+    if (cells.length !== 41 && cells.length !== 42) {
+      showUploadError(`Row ${i + 1} has ${cells.length} columns — expected 41 (or 42 with a trailing class label).`);
+      return;
+    }
+    const record = {};
+    NSL_KDD_FIELDS.forEach((field, idx) => {
+      record[field] = CATEGORICAL_FIELDS.includes(field) ? cells[idx] : Number(cells[idx]);
+    });
+    records.push(record);
+    labels.push(cells.length === 42 ? cells[41] : null);
+  }
+
+  parsedRecords = records;
+  parsedLabels = labels;
+  renderUploadPreview();
+  refreshReview();
+}
+
+function showUploadError(msg) {
+  uploadError.textContent = msg;
+  uploadError.classList.remove("hidden");
+}
+
+function renderUploadPreview() {
+  uploadPreview.classList.remove("hidden");
+  const extra = parsedRecords.length > 1 ? ` (${parsedRecords.length - 1} additional row(s) will be batch-classified)` : "";
+  uploadPreview.innerHTML = `
+    <p class="text-sm text-primary font-medium mb-2">
+      <span class="material-symbols-outlined text-sm align-middle">check_circle</span>
+      Parsed ${parsedRecords.length} row(s) successfully${extra}.
+    </p>
+    <p class="text-xs text-text-secondary">Row 1 will be shown below with confidence and a full Granite explanation.</p>
+  `;
+}
+
+// ---------------------------------------------------------------------
+// Feature review grid (Step 2)
+// ---------------------------------------------------------------------
+function getCurrentRecord() {
+  if (inputMode === "sample") return SAMPLES[selectedSample].record;
+  if (inputMode === "upload") return parsedRecords.length ? parsedRecords[0] : null;
+  return null;
+}
+
+function refreshReview() {
+  const record = getCurrentRecord();
+  const grid = document.getElementById("feature-grid");
+  const hint = document.getElementById("run-hint");
+  if (!record) {
+    grid.innerHTML = `<p class="col-span-full text-sm text-text-secondary">Upload or paste rows above to see a preview here.</p>`;
+    document.getElementById("run-btn").disabled = true;
+    hint.textContent = "";
+    return;
+  }
+  document.getElementById("run-btn").disabled = false;
+  grid.innerHTML = DISPLAY_FIELDS.map(([field, label]) => `
+    <div class="feature-row pb-3">
+      <p class="font-mono text-[10px] uppercase tracking-widest text-text-secondary mb-1">${label}</p>
+      <p class="text-sm font-medium">${record[field]}</p>
+    </div>
+  `).join("");
+}
+
+function hideResults() {
+  document.getElementById("results-section").classList.add("hidden");
+  document.getElementById("batch-section").classList.add("hidden");
+  document.getElementById("error-banner").classList.add("hidden");
+}
+
+// ---------------------------------------------------------------------
+// Backend health check
+// ---------------------------------------------------------------------
+async function checkHealth() {
+  const dot = document.getElementById("backend-dot");
+  const status = document.getElementById("backend-status");
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/health`, { method: "GET" });
+    const data = await res.json();
+    if (res.ok && data.status === "ok") {
+      dot.className = "w-2 h-2 rounded-full bg-primary";
+      status.textContent = "Backend connected";
+    } else {
+      dot.className = "w-2 h-2 rounded-full bg-error";
+      status.textContent = "Backend error";
+    }
+  } catch (e) {
+    dot.className = "w-2 h-2 rounded-full bg-error";
+    status.textContent = "Backend unreachable";
+    console.error("Health check failed:", e);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Run detection
+// ---------------------------------------------------------------------
+const runBtn = document.getElementById("run-btn");
+const runBtnLabel = document.getElementById("run-btn-label");
+
+runBtn.addEventListener("click", async () => {
+  const record = getCurrentRecord();
+  if (!record) return;
+
+  hideResults();
+  runBtn.disabled = true;
+  runBtnLabel.innerHTML = `<span class="spinner inline-block align-middle mr-2"></span> Running…`;
+  document.getElementById("run-hint").textContent = "Calling Watson Machine Learning, then Granite…";
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/predict-explain`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ record }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Unknown backend error");
+
+    const groundTruth = inputMode === "upload" && parsedLabels.length ? parsedLabels[0] : null;
+    renderResults(data, groundTruth);
+
+    if (inputMode === "upload" && parsedRecords.length > 1) {
+      await runBatch();
+    }
+  } catch (err) {
+    document.getElementById("error-detail").textContent = err.message;
+    document.getElementById("error-banner").classList.remove("hidden");
+  } finally {
+    runBtn.disabled = false;
+    runBtnLabel.textContent = "Run detection";
+    document.getElementById("run-hint").textContent = "";
+  }
+});
+
+function _renderResultsCore(data, groundTruth) {
+  const isAnomaly = String(data.prediction).toLowerCase().includes("anomal");
+  const badge = document.getElementById("verdict-badge");
+  const icon = document.getElementById("verdict-icon");
+  const text = document.getElementById("verdict-text");
+
+  badge.className = "inline-flex items-center gap-3 px-6 py-3 rounded-full self-start " +
+    (isAnomaly ? "bg-anomaly-container" : "bg-normal-container");
+  icon.textContent = isAnomaly ? "gpp_maybe" : "verified_user";
+  icon.style.color = isAnomaly ? "#ff6b5e" : "#00e38a";
+  text.textContent = isAnomaly ? "Anomaly detected" : "Normal traffic";
+  text.style.color = isAnomaly ? "#ff6b5e" : "#00e38a";
+
+  const confidencePct = getDisplayConfidence(data.prediction, data.probability);
+  document.getElementById("confidence-value").textContent = confidencePct !== null ? `${confidencePct.toFixed(1)}%` : "n/a";
+  document.getElementById("confidence-bar").style.width = confidencePct !== null ? `${confidencePct}%` : "0%";
+
+  const gtNote = document.getElementById("ground-truth-note");
+  if (groundTruth) {
+    const normalizedTruth = groundTruth.toLowerCase().includes("normal") ? "normal" : "anomaly";
+    const predicted = isAnomaly ? "anomaly" : "normal";
+    const match = normalizedTruth === predicted;
+    gtNote.className = "mb-6 text-sm px-4 py-2 rounded-lg " + (match ? "bg-normal-container text-primary" : "bg-anomaly-container text-anomaly");
+    gtNote.textContent = match
+      ? `✓ Matches the actual label in your file ("${groundTruth}").`
+      : `✗ Does not match the actual label in your file ("${groundTruth}").`;
+    gtNote.classList.remove("hidden");
+  } else {
+    gtNote.classList.add("hidden");
+  }
+
+  document.getElementById("explanation-text").textContent = data.explanation || "No explanation returned.";
+  document.getElementById("results-section").classList.remove("hidden");
+  document.getElementById("results-section").scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+  renderCharts(data, getCurrentRecord());
+}
+
+// ---------------------------------------------------------------------
+// Charts
+// ---------------------------------------------------------------------
+let _donutChart = null;
+let _barChart = null;
+
+const CHART_FONT = "'JetBrains Mono', monospace";
+const CHART_COLOR_NORMAL = "#00e38a";
+const CHART_COLOR_ANOMALY = "#ff6b5e";
+const CHART_GRID = "rgba(186,203,188,0.12)";
+const CHART_TEXT = "#bacbbc";
+
+function renderCharts(data, record) {
+  // --- 1. Donut: Confidence breakdown ---
+  const isAnomaly = String(data.prediction).toLowerCase().includes("anomal");
+  // Use calibrated values for both slices so the displayed percentages are
+  // consistent with the headline confidence figure.
+  const anomalyConfidence = getDisplayConfidence("anomaly", data.probability);
+  const normalConfidence  = getDisplayConfidence("normal",  data.probability);
+  let normalPct  = normalConfidence  !== null ? normalConfidence  : 50;
+  let anomalyPct = anomalyConfidence !== null ? anomalyConfidence : 50;
+
+  if (_donutChart) { _donutChart.destroy(); _donutChart = null; }
+  const donutCtx = document.getElementById("chart-donut").getContext("2d");
+  _donutChart = new Chart(donutCtx, {
+    type: "doughnut",
+    data: {
+      labels: ["Normal", "Anomaly"],
+      datasets: [{
+        data: [normalPct, anomalyPct],
+        backgroundColor: [CHART_COLOR_NORMAL, CHART_COLOR_ANOMALY],
+        borderWidth: 0,
+        hoverOffset: 6,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: "68%",
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: {
+            color: CHART_TEXT,
+            font: { family: CHART_FONT, size: 10 },
+            boxWidth: 10,
+            padding: 14,
+          },
+        },
+        tooltip: {
+          callbacks: { label: (ctx) => ` ${ctx.label}: ${ctx.parsed}%` },
+          bodyFont: { family: CHART_FONT, size: 11 },
+        },
+      },
+    },
+    plugins: [{
+      id: "donut-center-label",
+      afterDraw(chart) {
+        const { ctx, chartArea: { top, bottom, left, right } } = chart;
+        const cx = (left + right) / 2, cy = (top + bottom) / 2;
+        const label = isAnomaly ? "Anomaly" : "Normal";
+        const conf = isAnomaly ? anomalyPct : normalPct;
+        ctx.save();
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.font = `600 18px 'Space Grotesk', sans-serif`;
+        ctx.fillStyle = isAnomaly ? CHART_COLOR_ANOMALY : CHART_COLOR_NORMAL;
+        ctx.fillText(`${conf}%`, cx, cy - 8);
+        ctx.font = `10px ${CHART_FONT}`;
+        ctx.fillStyle = CHART_TEXT;
+        ctx.fillText(label.toUpperCase(), cx, cy + 10);
+        ctx.restore();
+      },
+    }],
+  });
+
+  // --- 2. Bar: Key risk indicators ---
+  const riskFields = ["serror_rate", "rerror_rate", "srv_serror_rate", "srv_rerror_rate"];
+  const riskLabels = ["SYN err", "REJ err", "Srv SYN err", "Srv REJ err"];
+  const riskValues = riskFields.map((f) => record ? Math.round((record[f] || 0) * 100) : 0);
+  const barColors = riskValues.map((v) => v > 50 ? CHART_COLOR_ANOMALY : CHART_COLOR_NORMAL);
+
+  if (_barChart) { _barChart.destroy(); _barChart = null; }
+  const barCtx = document.getElementById("chart-bars").getContext("2d");
+  _barChart = new Chart(barCtx, {
+    type: "bar",
+    data: {
+      labels: riskLabels,
+      datasets: [{
+        data: riskValues,
+        backgroundColor: barColors,
+        borderRadius: 4,
+        borderSkipped: false,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: { label: (ctx) => ` ${ctx.parsed.y}%` },
+          bodyFont: { family: CHART_FONT, size: 11 },
+        },
+      },
+      scales: {
+        x: {
+          grid: { color: CHART_GRID },
+          ticks: { color: CHART_TEXT, font: { family: CHART_FONT, size: 9 } },
+        },
+        y: {
+          min: 0,
+          max: 100,
+          grid: { color: CHART_GRID },
+          ticks: {
+            color: CHART_TEXT,
+            font: { family: CHART_FONT, size: 9 },
+            callback: (v) => `${v}%`,
+            stepSize: 25,
+          },
+        },
+      },
+    },
+  });
+}
+
+// ---------------------------------------------------------------------
+// Batch scoring for upload rows beyond the first
+// ---------------------------------------------------------------------
+async function runBatch() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/predict`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ records: parsedRecords }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Batch scoring failed");
+
+    const tbody = document.getElementById("batch-tbody");
+    tbody.innerHTML = data.results.map((r, i) => {
+      const rec = parsedRecords[i];
+      const isAnomaly = String(r.prediction).toLowerCase().includes("anomal");
+      const confPct = getDisplayConfidence(r.prediction, r.probability);
+      const conf = confPct !== null ? confPct.toFixed(1) + "%" : "n/a";
+      const truth = parsedLabels[i];
+      let matchCell = "—";
+      if (truth) {
+        const normalizedTruth = truth.toLowerCase().includes("normal") ? "normal" : "anomaly";
+        const predicted = isAnomaly ? "anomaly" : "normal";
+        matchCell = normalizedTruth === predicted
+          ? '<span class="text-primary">✓</span>'
+          : '<span class="text-anomaly">✗</span>';
+      }
+      return `<tr>
+        <td>${i + 1}</td><td>${rec.protocol_type}</td><td>${rec.service}</td><td>${rec.flag}</td>
+        <td class="${isAnomaly ? 'text-anomaly' : 'text-primary'} font-medium">${isAnomaly ? "Anomaly" : "Normal"}</td>
+        <td>${conf}</td><td>${truth || "—"}</td><td>${matchCell}</td>
+      </tr>`;
+    }).join("");
+
+    document.getElementById("batch-section").classList.remove("hidden");
+
+    // ── Update analytics dashboard with full batch results ──────────────
+    updateDashboardCharts(data.results, parsedRecords, "CSV Upload");
+  } catch (err) {
+    // Batch failing shouldn't hide the primary single-row result already shown
+    console.error("Batch scoring error:", err);
+  }
+}
+
+// =====================================================================
+// Analytics Dashboard Charts
+// =====================================================================
+
+// Chart instance registry — destroy before recreating to avoid overlaps
+const _charts = {};
+function destroyChart(id) {
+  if (_charts[id]) { _charts[id].destroy(); delete _charts[id]; }
+}
+
+// Shared chart colours — reads live CSS variables so dark/light mode is
+// automatically respected whenever charts are (re-)drawn
+function chartColors() {
+  const isDark = document.documentElement.classList.contains("dark");
+  return {
+    text:    isDark ? "#bacbbc" : "#4a5c4c",
+    grid:    isDark ? "rgba(186,203,188,0.10)" : "rgba(0,0,0,0.07)",
+    normal:  "#00e38a",
+    anomaly: "#ff6b5e",
+    palette: ["#00e38a","#47f4f0","#ffb347","#ff6b5e","#7c5cd8","#3b82d4"],
+  };
+}
+
+// -----------------------------------------------------------------------
+// Aggregate results + records into a data object for the two charts
+// -----------------------------------------------------------------------
+function buildAnalyticsData(results, records) {
+  let normalCount = 0, anomalyCount = 0, confSum = 0;
+  const protocolFreq = {};
+
+  results.forEach((r, i) => {
+    const rec = records[i] || {};
+    const isAnomaly = String(r.prediction).toLowerCase().includes("anomal");
+    const confPct = getDisplayConfidence(r.prediction, r.probability) || 50;
+
+    if (isAnomaly) anomalyCount++; else normalCount++;
+    confSum += confPct;
+
+    const proto = String(rec.protocol_type || "unknown").toLowerCase();
+    protocolFreq[proto] = (protocolFreq[proto] || 0) + 1;
+  });
+
+  const protoEntries = Object.entries(protocolFreq).sort((a, b) => b[1] - a[1]);
+
+  return {
+    total:        results.length,
+    normalCount,  anomalyCount,
+    avgConf:      results.length > 0 ? (confSum / results.length).toFixed(1) : "—",
+    protoLabels:  protoEntries.map(([k]) => k),
+    protoValues:  protoEntries.map(([, v]) => v),
+  };
+}
+
+// -----------------------------------------------------------------------
+// Draw (or redraw) the two analytics charts from an aggregated data object
+// -----------------------------------------------------------------------
+function renderAnalyticsCharts(d) {
+  const C = chartColors();
+
+  // ── Stat cards ─────────────────────────────────────────────────────
+  document.getElementById("stat-total").textContent     = d.total;
+  document.getElementById("stat-anomalies").textContent = d.anomalyCount;
+  document.getElementById("stat-normal").textContent    = d.normalCount;
+  document.getElementById("stat-avg-conf").textContent  = d.avgConf !== "—" ? `${d.avgConf}%` : "—";
+
+  // ── 1. Prediction Distribution (doughnut) ──────────────────────────
+  destroyChart("prediction-dist");
+  _charts["prediction-dist"] = new Chart(
+    document.getElementById("chart-prediction-dist").getContext("2d"),
+    {
+      type: "doughnut",
+      data: {
+        labels: ["Normal", "Anomaly"],
+        datasets: [{ data: [d.normalCount, d.anomalyCount],
+          backgroundColor: [C.normal, C.anomaly], borderWidth: 0, hoverOffset: 8 }],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, cutout: "68%",
+        animation: { duration: 700, easing: "easeOutQuart" },
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: { color: C.text, font: { family: CHART_FONT, size: 11 }, boxWidth: 12, padding: 18 },
+          },
+          tooltip: {
+            callbacks: { label: (ctx) => ` ${ctx.label}: ${ctx.parsed} record(s)` },
+            bodyFont: { family: CHART_FONT, size: 11 },
+          },
+        },
+      },
+      plugins: [{
+        id: "pred-dist-center",
+        afterDraw(chart) {
+          const { ctx, chartArea: { top, bottom, left, right } } = chart;
+          const cx = (left + right) / 2, cy = (top + bottom) / 2;
+          ctx.save();
+          ctx.textAlign = "center"; ctx.textBaseline = "middle";
+          ctx.font = `700 22px 'Space Grotesk', sans-serif`;
+          ctx.fillStyle = C.text;
+          ctx.fillText(d.total, cx, cy - 9);
+          ctx.font = `10px ${CHART_FONT}`;
+          ctx.fillStyle = C.text;
+          ctx.globalAlpha = 0.65;
+          ctx.fillText("TOTAL", cx, cy + 11);
+          ctx.restore();
+        },
+      }],
+    }
+  );
+
+  // ── 2. Protocol Distribution (horizontal bar) ──────────────────────
+  destroyChart("protocol-dist");
+  _charts["protocol-dist"] = new Chart(
+    document.getElementById("chart-protocol-dist").getContext("2d"),
+    {
+      type: "bar",
+      data: {
+        labels: d.protoLabels,
+        datasets: [{ data: d.protoValues,
+          backgroundColor: d.protoLabels.map((_, i) => C.palette[i % C.palette.length]),
+          borderRadius: 5, borderSkipped: false, barPercentage: 0.6 }],
+      },
+      options: {
+        indexAxis: "y",
+        responsive: true, maintainAspectRatio: false,
+        animation: { duration: 700, easing: "easeOutQuart" },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: { label: (ctx) => ` ${ctx.parsed.x} record(s)` },
+            bodyFont: { family: CHART_FONT, size: 11 },
+          },
+        },
+        scales: {
+          x: { beginAtZero: true, grid: { color: C.grid },
+               ticks: { color: C.text, font: { family: CHART_FONT, size: 10 }, precision: 0 } },
+          y: { grid: { color: "transparent" },
+               ticks: { color: C.text, font: { family: CHART_FONT, size: 11 } } },
+        },
+      },
+    }
+  );
+}
+
+// -----------------------------------------------------------------------
+// Public entry-point: aggregate + redraw all analytics charts.
+// results : [{prediction, probability}, ...]
+// records : [{protocol_type, service, flag, ...}, ...]  — same length
+// source  : label shown in the badge ("CSV Upload" | "Sample Record" | …)
+// -----------------------------------------------------------------------
+function updateDashboardCharts(results, records, source) {
+  const content = document.getElementById("analytics-content");
+  const badge   = document.getElementById("analytics-source-badge");
+
+  // Animate on first live-data update (content already visible from page load)
+  if (!content.classList.contains("analytics-revealed")) {
+    requestAnimationFrame(() => content.classList.add("analytics-revealed"));
+  }
+
+  if (badge) {
+    badge.textContent = source || "Live data";
+    // Remove demo-data styling, apply live-data styling
+    badge.classList.remove("bg-surface-container-high");
+  }
+  renderAnalyticsCharts(buildAnalyticsData(results, records));
+}
+
+// -----------------------------------------------------------------------
+// Single-record result: update analytics dashboard for both sample and
+// single-row CSV upload predictions.
+// renderResults is the public entry-point; it calls _renderResultsCore
+// and then updates analytics.
+// -----------------------------------------------------------------------
+function renderResults(data, groundTruth) {
+  _renderResultsCore(data, groundTruth);
+  const record = getCurrentRecord();
+  const source = inputMode === "upload" ? "CSV Upload" : "Sample Record";
+  updateDashboardCharts([data], [record], source);
+}
+
+// -----------------------------------------------------------------------
+// Populate the analytics dashboard with demo/placeholder values on load.
+// -----------------------------------------------------------------------
+function initDemoDashboard() {
+  const demoResults = [
+    { prediction: "normal",  probability: [0.04, 0.96] },
+    { prediction: "normal",  probability: [0.07, 0.93] },
+    { prediction: "anomaly", probability: [0.88, 0.12] },
+    { prediction: "normal",  probability: [0.02, 0.98] },
+    { prediction: "anomaly", probability: [0.91, 0.09] },
+    { prediction: "normal",  probability: [0.05, 0.95] },
+    { prediction: "normal",  probability: [0.03, 0.97] },
+  ];
+  const demoRecords = [
+    { protocol_type: "tcp"  },
+    { protocol_type: "tcp"  },
+    { protocol_type: "udp"  },
+    { protocol_type: "tcp"  },
+    { protocol_type: "icmp" },
+    { protocol_type: "tcp"  },
+    { protocol_type: "udp"  },
+  ];
+  renderAnalyticsCharts(buildAnalyticsData(demoResults, demoRecords));
+}
+
+// ---------------------------------------------------------------------
+// Init
+// ---------------------------------------------------------------------
+refreshReview();
+checkHealth();
+initDemoDashboard();
+
+// Theme Toggle
+(function() {
+    const html = document.documentElement;
+    const toggle = document.getElementById('themeToggle');
+    const saved = localStorage.getItem('theme');
+
+    if (saved) {
+        html.classList.toggle('dark', saved === 'dark');
+    } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        html.classList.toggle('dark', prefersDark);
+    }
+
+    function toggleTheme() {
+        html.classList.toggle('dark');
+        localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    }
+
+    toggle.addEventListener('click', toggleTheme);
+    toggle.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleTheme(); }
+    });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+# -- Python ------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+MANIFEST
+
+# -- Virtual environments -----------------------------------------------------
+.venv/
+venv/
+env/
+ENV/
+.env
+*.env
+
+# -- Secrets / credentials ----------------------------------------------------
+backend/.env
+*.pem
+*.key
+
+# -- Jupyter ------------------------------------------------------------------
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# -- Data / model artefacts ---------------------------------------------------
+*.pkl
+*.pickle
+*.h5
+*.joblib
+*.model
+*.parquet
+
+# -- OS junk ------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# -- Editors ------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# -- Pytest / coverage --------------------------------------------------------
+.pytest_cache/
+.coverage
+htmlcov/
+
+backend/.env
+backend/__pycache__/
+*.pyc
+.vscode/

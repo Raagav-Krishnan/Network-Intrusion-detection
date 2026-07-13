@@ -114,7 +114,6 @@ The dashboard lets you select or input network traffic features and get a real-t
 
 https://github.com/Raagav-Krishnan/Network-Intrusion-detection/blob/df7409980a147e80f3e8060630735e1d74bbb1f2/frontend/assets/demo_video.mp4
 
-> **Note:** replace the link above with your actual video URL. If you dragged your video into a GitHub comment/issue/PR or the README editor directly on github.com, GitHub auto-generates a `github.com/user-attachments/assets/...` or `user-images.githubusercontent.com/...` link — paste that here so it renders as an inline playable video. A plain relative path (e.g. `./demo.mp4`) will only show as a downloadable file, not an inline player.
 
 ---
 

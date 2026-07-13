@@ -2,7 +2,7 @@
 
 > An AI-powered system that classifies network traffic as normal or anomalous, and explains *why* — built on IBM watsonx.ai AutoAI and IBM Granite, deployed as a live web application.
 
-**🔗 Website Link:** [network-intrusion-detection-14k5-3rfbywuoc.vercel.app](https://network-intrusion-detection-14k5-3rfbywuoc.vercel.app/)
+**🔗 Website Link:** [network-intrusion-detection-14k5-3rfbywuoc.vercel.app](https://network-intrusion-detection-14k5.vercel.app/)
 
 ---
 

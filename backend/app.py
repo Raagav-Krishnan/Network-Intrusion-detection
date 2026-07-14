@@ -28,6 +28,20 @@ WML_URL           = os.getenv("WML_URL", "")
 WATSONX_PROJECT_ID = os.getenv("WATSONX_PROJECT_ID", "")
 
 # ---------------------------------------------------------------------------
+# Temporary startup logging — confirms which region / deployment is active.
+# Remove once the eu-gb migration is verified.
+# ---------------------------------------------------------------------------
+import re as _re
+_region_from_url = _re.search(r"(eu-gb|au-syd|us-south|eu-de)", WML_DEPLOYMENT_URL + " " + WML_URL)
+print("========== IBM WML CONFIG ==========")
+print(f"WML_URL            : {WML_URL}")
+print(f"WML_DEPLOYMENT_URL : {WML_DEPLOYMENT_URL}")
+print(f"Inferred region    : {_region_from_url.group(1) if _region_from_url else 'unknown'}")
+print(f"WATSONX_PROJECT_ID : {'set' if WATSONX_PROJECT_ID else 'MISSING'}")
+print(f"IBM_API_KEY        : {'set' if IBM_API_KEY else 'MISSING'}")
+print("====================================\n")
+
+# ---------------------------------------------------------------------------
 # Exact NSL-KDD feature order required by the WML deployment.
 # This is the single source of truth used for every payload construction.
 # Confirmed working against the live deployment via debug_model.py.
